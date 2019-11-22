@@ -16,18 +16,28 @@
 #+LATEX_HEADER: \def\cheatsheetcols{2}
 #+LATEX_HEADER: \def\cheatsheetitemsep{-0.5em}
 
-#+LATEX: \vspace{1em}
+#+LATEX: \invisible{hi}\vspace{-0.5em}
 #+BEGIN_CENTER
 /[[https://legends2k.github.io/spirit-of-cpp/#25][evade needless (deep) copy, prefer move (pointer swap)]]/
 #+END_CENTER
 
 * ~In~
 
+#+BEGIN_EXPORT latex
+\invisible{hi}\vspace{-2em}  % remove unnecessary vspace due to minted
+\hfill\begin{tabular}{@{}p{0.4\linewidth}@{}}  % align horizontally in page
+\vspace{-3em}  % align vertically with section title
+#+END_EXPORT
+
+#+BEGIN_SRC c++
+void f(const T&);
+#+END_SRC
+
+#+LATEX: \end{tabular}
+
 Objects for /reading/: *~const~ reference*
 
-#+BEGIN_SRC c++ :tangle no
-void f(const T&);
-
+#+BEGIN_SRC c++
 // example
 void Align(const std::vector<int>& page_ids) {
 }
@@ -36,25 +46,45 @@ Align(page_ids);
 
 * ~In~ for Cheap or Non-copyable Objects
 
+#+BEGIN_EXPORT latex
+\invisible{hi}\vspace{-2em}  % remove unnecessary vspace due to minted
+\hfill\begin{tabular}{@{}p{0.4\linewidth}@{}}  % align horizontally in page
+\vspace{-3em}  % align vertically with section title
+#+END_EXPORT
+
+#+BEGIN_SRC c++
+void f(T);
+#+END_SRC
+
+#+LATEX: \end{tabular}
+
 Primitives, impossible to copy types: *value*
 
-#+BEGIN_SRC c++ :tangle no
-void f(T);
-
+#+BEGIN_SRC c++
 // example
 void SetOrigin(int count, Point origin,
                std::unique_ptr<Shape> box) {
 }
-SetOrigin(n, org, std::move(box))
+SetOrigin(n, org, std::move(box));
 #+END_SRC
 
 * ~In~ need Ownership
 
+#+BEGIN_EXPORT latex
+\invisible{hi}\vspace{-2em}  % remove unnecessary vspace due to minted
+\hfill\begin{tabular}{@{}p{0.4\linewidth}@{}}  % align horizontally in page
+\vspace{-3em}  % align vertically with section title
+#+END_EXPORT
+
+#+BEGIN_SRC c++
+void f(T&&);
+#+END_SRC
+
+#+LATEX: \end{tabular}
+
 Objects for /ownership/: *rvalue reference*
 
-#+BEGIN_SRC c++ :tangle no
-void f(T&&);
-
+#+BEGIN_SRC c++
 // example
 void SetMargins(std::vector<Margin>&& margins) {
   m_margins = std::move(margins);  // own margins
@@ -64,32 +94,52 @@ SetMargins(std::move(page_margins)); // page_margins empty now
 
 * ~In~ Need Copy not Ownership
 
+#+BEGIN_EXPORT latex
+\invisible{hi}\vspace{-2em}  % remove unnecessary vspace due to minted
+\hfill\begin{tabular}{@{}p{0.4\linewidth}@{}}  % align horizontally in page
+\vspace{-3em}  % align vertically with section title
+#+END_EXPORT
+
+#+BEGIN_SRC c++
+void f(T&&);
+void f(const T&);
+#+END_SRC
+
+#+LATEX: \end{tabular}
+
 Provide two overloads; for callers wanting to
 
 - /relinquish/ ownership: *rvalue reference*
 - /retain/ ownership: *~const~ reference*
 
-#+BEGIN_SRC c++ :tangle no
-void f(T&&);         // for relinquishers
-void f(const T&);    // for retainers
-
+#+BEGIN_SRC c++
 // example
-void SetMargins(std::vector<Margin>&& margins) {
+void SetMargins(std::vector<Margin>&& margins) {  // for relinquishers
   m_margins = std::move(margins);  // cheap move
 }
 
-void SetMargins(const std::vector<Margin>& margins) {
+void SetMargins(const std::vector<Margin>& margins) {  // for retainers
   m_margins = margins;  // expensive deep copy
 }
 #+END_SRC
 
 * ~In~ Need Ownership in *Constructor*
 
+#+BEGIN_EXPORT latex
+\invisible{hi}\vspace{-2em}  % remove unnecessary vspace due to minted
+\hfill\begin{tabular}{@{}p{0.4\linewidth}@{}}  % align horizontally in page
+\vspace{-3em}
+#+END_EXPORT
+
+#+BEGIN_SRC c++
+void f(T);
+#+END_SRC
+
+#+LATEX: \end{tabular}
+
 Objects for /ownership/ during construction: *value*
 
-#+BEGIN_SRC c++ :tangle no
-void f(T);
-
+#+BEGIN_SRC c++
 // example
 Image::Image(Pixels p) : m_pixels(std::move(p)) {
 }
@@ -99,11 +149,21 @@ auto i2 = Image(p2);             // retain; expensive deep copy
 
 * ~In and Out~
 
+#+BEGIN_EXPORT latex
+\invisible{hi}\vspace{-2em}  % remove unnecessary vspace due to minted
+\hfill\begin{tabular}{@{}p{0.4\linewidth}@{}}  % align horizontally in page
+\vspace{-3em}  % align vertically with section title
+#+END_EXPORT
+
+#+BEGIN_SRC c++
+void f(T&);
+#+END_SRC
+
+#+LATEX: \end{tabular}
+
 Objects for /reading/ and /writing/: *lvalue reference*
 
-#+BEGIN_SRC c++ :tangle no
-void f(T&);
-
+#+BEGIN_SRC c++
 // example
 void RealignMargins(std::vector<Margin>& margins) {
 }
@@ -111,11 +171,21 @@ void RealignMargins(std::vector<Margin>& margins) {
 
 * ~Out~
 
+#+BEGIN_EXPORT latex
+\invisible{hi}\vspace{-2em}  % remove unnecessary vspace due to minted
+\hfill\begin{tabular}{@{}p{0.4\linewidth}@{}}  % align horizontally in page
+\vspace{-3em}  % align vertically with section title
+#+END_EXPORT
+
+#+BEGIN_SRC c++
+T f();
+#+END_SRC
+
+#+LATEX: \end{tabular}
+
 /Return/ by *value*; prvalues get moved, copy evaded for move-unfriendly types by [[https://en.wikipedia.org/wiki/Copy_elision#Return_value_optimization][RVO]]
 
-#+BEGIN_SRC c++ :tangle no
-T f();
-
+#+BEGIN_SRC c++
 // example
 Image Render() {
   return Image(/*some params*/);
@@ -125,11 +195,21 @@ Image i = Render();    // using std::move(Render()) is pessimization
 
 * ~Out~ for Move-Unfriendly Objects
 
+#+BEGIN_EXPORT latex
+\invisible{hi}\vspace{-2em}  % remove unnecessary vspace due to minted
+\hfill\begin{tabular}{@{}p{0.4\linewidth}@{}}  % align horizontally in page
+\vspace{-3em}  % align vertically with section title
+#+END_EXPORT
+
+#+BEGIN_SRC c++
+void f(T&);
+#+END_SRC
+
+#+LATEX: \end{tabular}
+
 /Pass/ as *lvalue reference* as both move and copy will lead to deep copy for [[https://stackoverflow.com/q/146452][POD]]s
 
-#+BEGIN_SRC c++ :tangle no
-void f(T&);
-
+#+BEGIN_SRC c++
 // example
 // a move-unfriendly type (has no freestore data members)
 struct doc::Properties {
