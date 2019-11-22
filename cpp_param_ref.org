@@ -1,4 +1,4 @@
-#+TITLE: Choosing C++ Function Parameter Type
+#+TITLE: C++ Function Parameter Choices
 #+SUBTITLE: /Sane Defaults/
 #+AUTHOR: [[https://legends2k.github.io/][Sundaram Ramaswamy]]
 #+EMAIL: [[mailto:legends2k@yahoo.com][legends2k@yahoo.com]]
@@ -15,10 +15,12 @@
 #+LATEX_HEADER: \landscapetrue
 #+LATEX_HEADER: \def\cheatsheetcols{2}
 #+LATEX_HEADER: \def\cheatsheetitemsep{-0.5em}
+#+LATEX_HEADER: \definecolor{orange}{rgb}{1.0, 0.4, 0}
+#+LATEX_HEADER: \hypersetup{colorlinks,linkcolor=darkblue,citecolor=darkblue,urlcolor=orange}
 
 #+LATEX: \invisible{hi}\vspace{-0.5em}
 #+BEGIN_CENTER
-/[[https://legends2k.github.io/spirit-of-cpp/#25][evade needless (deep) copy, prefer move (pointer swap)]]/
+-- /[[https://legends2k.github.io/spirit-of-cpp/#25][evade needless (deep) copy, prefer move (pointer swap)]]/ --
 #+END_CENTER
 
 * ~In~
@@ -58,7 +60,7 @@ void f(T);
 
 #+LATEX: \end{tabular}
 
-Primitives, impossible to copy types: *value*
+Primitives and impossible to copy types: *value*
 
 #+BEGIN_SRC c++
 // example
@@ -68,7 +70,7 @@ void SetOrigin(int count, Point origin,
 SetOrigin(n, org, std::move(box));
 #+END_SRC
 
-* ~In~ need Ownership
+* ~In~ take Ownership
 
 #+BEGIN_EXPORT latex
 \invisible{hi}\vspace{-2em}  % remove unnecessary vspace due to minted
@@ -86,13 +88,13 @@ Objects for /ownership/: *rvalue reference*
 
 #+BEGIN_SRC c++
 // example
-void SetMargins(std::vector<Margin>&& margins) {
-  m_margins = std::move(margins);  // own margins
+void SetTitle(std::string&& title) {
+  m_title = std::move(title);   // steal title’s data
 }
-SetMargins(std::move(page_margins)); // page_margins empty now
+SetTitle(std::move(app_title)); // app_title empty here
 #+END_SRC
 
-* ~In~ Need Copy not Ownership
+* ~In~ take Copy
 
 #+BEGIN_EXPORT latex
 \invisible{hi}\vspace{-2em}  % remove unnecessary vspace due to minted
@@ -114,21 +116,23 @@ Provide two overloads; for callers wanting to
 
 #+BEGIN_SRC c++
 // example
-void SetMargins(std::vector<Margin>&& margins) {  // for relinquishers
-  m_margins = std::move(margins);  // cheap move
+void SetTitle(std::string&& title) {       // for relinquishers
+  m_title = std::move(title);              // cheap move
 }
 
-void SetMargins(const std::vector<Margin>& margins) {  // for retainers
-  m_margins = margins;  // expensive deep copy
+void SetTitle(const std::string& title) {  // for retainers
+  m_title = title;                         // expensive deep copy
 }
+SetTitle(std::move(page_title));    // page_title empty
+SetTitle(doc_title);                // doc_title valid
 #+END_SRC
 
-* ~In~ Need Ownership in *Constructor*
+* ~In~ take Ownership in *Constructor*
 
 #+BEGIN_EXPORT latex
 \invisible{hi}\vspace{-2em}  % remove unnecessary vspace due to minted
 \hfill\begin{tabular}{@{}p{0.4\linewidth}@{}}  % align horizontally in page
-\vspace{-3em}
+\vspace{-3em}  % align vertically with section title
 #+END_EXPORT
 
 #+BEGIN_SRC c++
@@ -171,7 +175,7 @@ Image Render() {
 Image i = Render();    // using std::move(Render()) is pessimization
 #+END_SRC
 
-* ~Out~ for Move-Unfriendly Objects
+* ~Out~ for Move-Unfriendly types
 
 #+BEGIN_EXPORT latex
 \invisible{hi}\vspace{-2em}  % remove unnecessary vspace due to minted
@@ -185,7 +189,8 @@ void f(T&);
 
 #+LATEX: \end{tabular}
 
-/Pass/ as *lvalue reference* as both move and copy will lead to deep copy for [[https://stackoverflow.com/q/146452][POD]]s
+Take *lvalue reference* and fill data \\
+Returning value (both move and copy) will lead to deep copy for [[https://stackoverflow.com/q/146452][POD]]s
 
 #+BEGIN_SRC c++
 // example
@@ -199,7 +204,7 @@ void Deduce(doc::Properties& p) {
 }
 #+END_SRC
 
-* ~In and Out~
+* ~In Out~
 
 #+BEGIN_EXPORT latex
 \invisible{hi}\vspace{-2em}  % remove unnecessary vspace due to minted
@@ -217,7 +222,7 @@ Objects for /reading/ and /writing/: *lvalue reference*
 
 #+BEGIN_SRC c++
 // example
-void RealignMargins(std::vector<Margin>& margins) {
+void AdjustMargins(std::vector<Margin>& margins) {
 }
 #+END_SRC
 
@@ -240,8 +245,8 @@ Pass parameter retaining lvalue/rvalue-/ness/: *forwarding reference*
 
 #+BEGIN_SRC c++
 template <typename T>
-void SetMargins(T&& margins) {
-  internal::SetMargins(std::forward<T>(margins));
+void SetTiel(T&& title) {
+  internal::SetTitle(std::forward<T>(title));
 }
 #+END_SRC
 
