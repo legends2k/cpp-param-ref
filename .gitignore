@@ -1,5 +1,10 @@
 *.bak
 *.tex
 *.pdf
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
 \#*#
 _minted*/
