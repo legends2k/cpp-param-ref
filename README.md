@@ -1,8 +1,8 @@
-Cheat sheet on choosing the right kind of function argument passing and returning to and from C++ functions and methods.
+A reference card / cheat sheet for choosing the right kind of function argument passing and returning to and from C++ functions and methods.  Download [reference card][card].
 
 C++ gives fine-grained control over argument passing and returning that many options exits.  There’s been enough over-thinking and discussions in the community.  Thankfully [experts have noticed this and have arrived at sane defaults](https://github.com/CppCon/CppCon2014/blob/master/Presentations/Back%20to%20the%20Basics!%20Essentials%20of%20Modern%20C%2B%2B%20Style/Back%20to%20the%20Basics!%20Essentials%20of%20Modern%20C%2B%2B%20Style%20-%20Herb%20Sutter%20-%20CppCon%202014.pdf).  Since the options are more and involved, having a ready reckoner is useful when coding.
 
-The cheat sheet is written in the venerated [Org mode][].
+The reference card is written in the venerated [Org mode][].
 
 # Dependencies
 
@@ -32,8 +32,9 @@ Other Linux repositories should have equivalent packages to get these.
 * [org-plus-contrib][] (from https://orgmode.org/elpa/)
 * [org-ref][] (optional, for citations, bibliography, …)
 
+[card]: https://github.com/legends2k/cpp-params-refcard/releases
 [pdfTeX]: http://www.tug.org/applications/pdftex/
-[Org-mode]: https://orgmode.org/
+[Org mode]: https://orgmode.org/
 [org-plus-contrib]: https://orgmode.org/worg/org-contrib/
 [org-ref]: https://github.com/jkitchin/org-ref
 [pygments]: https://pygments.org/
@@ -58,6 +59,6 @@ Append this to your Emacs configuration
 
 # Generation
 
-* Edit `CheatSheet.org`
+* Edit `cpp-params-refcard.org`
 * Save
 * Export <kbd>C-c C-e l o</kbd>
