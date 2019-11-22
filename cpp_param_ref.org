@@ -1,5 +1,5 @@
 #+TITLE: Choosing C++ Function Parameter Type
-#+SUBTITLE: /Sane Defaults/ -- Reference Card
+#+SUBTITLE: /Sane Defaults/
 #+AUTHOR: [[https://legends2k.github.io/][Sundaram Ramaswamy]]
 #+EMAIL: [[mailto:legends2k@yahoo.com][legends2k@yahoo.com]]
 #+INCLUDE: CheatSheet/CheatSheetSetup.org
@@ -8,7 +8,7 @@
 
 * LaTeX Extra, Local, Setup  :ignore:
 
-#+LATEX_HEADER: \def\cheatsheeturl{https://github.com/legends2k/cpp-params-ref}
+#+LATEX_HEADER: \def\cheatsheeturl{https://github.com/legends2k/cpp-param-ref}
 # https://emacs.stackexchange.com/q/45100/4106
 #+LATEX_HEADER: \usepackage{nopageno}
 
@@ -16,10 +16,10 @@
 #+LATEX_HEADER: \def\cheatsheetcols{2}
 #+LATEX_HEADER: \def\cheatsheetitemsep{-0.5em}
 
-# Example unicode declarations; see section “unicode” below.
-#+LATEX_HEADER: \newunicodechar{𝑻}{\ensuremath{T}}
-#+LATEX_HEADER: \newunicodechar{⊕}{\ensuremath{\oplus}}
-#+LATEX_HEADER: \newunicodechar{≈}{\ensuremath{\approx}}
+#+LATEX: \vspace{1em}
+#+BEGIN_CENTER
+/[[https://legends2k.github.io/spirit-of-cpp/#25][evade needless (deep) copy, prefer move (pointer swap)]]/
+#+END_CENTER
 
 * ~In~
 
@@ -66,8 +66,8 @@ SetMargins(std::move(page_margins)); // page_margins empty now
 
 Provide two overloads; for callers wanting to
 
-- /relinquish/: *rvalue reference*
-- /retain/: *~const~ reference*
+- /relinquish/ ownership: *rvalue reference*
+- /retain/ ownership: *~const~ reference*
 
 #+BEGIN_SRC c++ :tangle no
 void f(T&&);         // for relinquishers
@@ -85,8 +85,7 @@ void SetMargins(const std::vector<Margin>& margins) {
 
 * ~In~ Need Ownership in *Constructor*
 
-Objects for /ownership/ during construction: *value* \\
-Passing by value Fresh allocation for object
+Objects for /ownership/ during construction: *value*
 
 #+BEGIN_SRC c++ :tangle no
 void f(T);
@@ -112,26 +111,27 @@ void RealignMargins(std::vector<Margin>& margins) {
 
 * ~Out~
 
-/Return/ by *value*
+/Return/ by *value*; prvalues get moved, copy evaded for move-unfriendly types by [[https://en.wikipedia.org/wiki/Copy_elision#Return_value_optimization][RVO]]
 
 #+BEGIN_SRC c++ :tangle no
 T f();
 
 // example
-Image RenderDoc() {
+Image Render() {
   return Image(/*some params*/);
 }
+Image i = Render();    // using std::move(Render()) is pessimization
 #+END_SRC
 
 * ~Out~ for Move-Unfriendly Objects
 
-/Pass/ as *lvalue reference*
+/Pass/ as *lvalue reference* as both move and copy will lead to deep copy for [[https://stackoverflow.com/q/146452][POD]]s
 
 #+BEGIN_SRC c++ :tangle no
 void f(T&);
 
 // example
-// move-unfriendly type with hardly any freestore data
+// a move-unfriendly type (has no freestore data members)
 struct doc::Properties {
   Point                 origin;
   float                 size_x, size_y;
@@ -141,6 +141,6 @@ void Deduce(doc::Properties& p) {
 }
 #+END_SRC
 
-#+latex: \vspace{0.75em}
+#+LATEX: \vspace{0.75em}
 
 *Reference*: [[https://github.com/CppCon/CppCon2014/blob/master/Presentations/Back%2520to%2520the%2520Basics!%2520Essentials%2520of%2520Modern%2520C%252B%252B%2520Style/Back%2520to%2520the%2520Basics!%2520Essentials%2520of%2520Modern%2520C%252B%252B%2520Style%2520-%2520Herb%2520Sutter%2520-%2520CppCon%25202014.pdf][Essentials of Modern C++ Style, /Herb Sutter/]]
