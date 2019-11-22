@@ -33,6 +33,7 @@ Other Linux repositories should have equivalent packages to get these.
 * [org-ref][] (optional, for citations, bibliography, …)
 
 [card]: https://github.com/legends2k/cpp-params-refcard/releases
+[CheatSheet]: https://github.com/alhassy/CheatSheet
 [pdfTeX]: http://www.tug.org/applications/pdftex/
 [Org mode]: https://orgmode.org/
 [org-plus-contrib]: https://orgmode.org/worg/org-contrib/
