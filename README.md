@@ -1,4 +1,4 @@
-A reference card / cheat sheet for choosing the right kind of function argument passing and returning to and from C++ functions and methods.  Download [reference card][card].
+A reference card / cheat sheet for choosing the right kind of function parameter to receive and return objects in C++ functions.  Download [reference card][card].
 
 C++ gives fine-grained control over argument passing and returning that many options exits.  There’s been enough over-thinking and discussions in the community.  Thankfully [experts have noticed this and have arrived at sane defaults](https://github.com/CppCon/CppCon2014/blob/master/Presentations/Back%20to%20the%20Basics!%20Essentials%20of%20Modern%20C%2B%2B%20Style/Back%20to%20the%20Basics!%20Essentials%20of%20Modern%20C%2B%2B%20Style%20-%20Herb%20Sutter%20-%20CppCon%202014.pdf).  Since the options are more and involved, having a ready reckoner is useful when coding.
 
