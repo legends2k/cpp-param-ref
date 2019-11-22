@@ -147,28 +147,6 @@ auto i1 = Image(std::move(p1));  // relinquish; cheap move
 auto i2 = Image(p2);             // retain; expensive deep copy
 #+END_SRC
 
-* ~In and Out~
-
-#+BEGIN_EXPORT latex
-\invisible{hi}\vspace{-2em}  % remove unnecessary vspace due to minted
-\hfill\begin{tabular}{@{}p{0.4\linewidth}@{}}  % align horizontally in page
-\vspace{-3em}  % align vertically with section title
-#+END_EXPORT
-
-#+BEGIN_SRC c++
-void f(T&);
-#+END_SRC
-
-#+LATEX: \end{tabular}
-
-Objects for /reading/ and /writing/: *lvalue reference*
-
-#+BEGIN_SRC c++
-// example
-void RealignMargins(std::vector<Margin>& margins) {
-}
-#+END_SRC
-
 * ~Out~
 
 #+BEGIN_EXPORT latex
@@ -218,6 +196,28 @@ struct doc::Properties {
   std::array<Margin>    margin_sizes;
 };
 void Deduce(doc::Properties& p) {
+}
+#+END_SRC
+
+* ~In and Out~
+
+#+BEGIN_EXPORT latex
+\invisible{hi}\vspace{-2em}  % remove unnecessary vspace due to minted
+\hfill\begin{tabular}{@{}p{0.4\linewidth}@{}}  % align horizontally in page
+\vspace{-3em}  % align vertically with section title
+#+END_EXPORT
+
+#+BEGIN_SRC c++
+void f(T&);
+#+END_SRC
+
+#+LATEX: \end{tabular}
+
+Objects for /reading/ and /writing/: *lvalue reference*
+
+#+BEGIN_SRC c++
+// example
+void RealignMargins(std::vector<Margin>& margins) {
 }
 #+END_SRC
 
