@@ -1,0 +1,146 @@
+#+TITLE: Choosing C++ Function Parameter Type
+#+SUBTITLE: /Sane Defaults/ -- Reference Card
+#+AUTHOR: [[https://legends2k.github.io/][Sundaram Ramaswamy]]
+#+EMAIL: [[mailto:legends2k@yahoo.com][legends2k@yahoo.com]]
+#+INCLUDE: CheatSheet/CheatSheetSetup.org
+#+PROPERTY: header-args :results none
+#+TODO: Todo | spacing LaTeX
+
+* LaTeX Extra, Local, Setup  :ignore:
+
+#+LATEX_HEADER: \def\cheatsheeturl{https://github.com/legends2k/cpp-params-ref}
+# https://emacs.stackexchange.com/q/45100/4106
+#+LATEX_HEADER: \usepackage{nopageno}
+
+#+LATEX_HEADER: \landscapetrue
+#+LATEX_HEADER: \def\cheatsheetcols{2}
+#+LATEX_HEADER: \def\cheatsheetitemsep{-0.5em}
+
+# Example unicode declarations; see section “unicode” below.
+#+LATEX_HEADER: \newunicodechar{𝑻}{\ensuremath{T}}
+#+LATEX_HEADER: \newunicodechar{⊕}{\ensuremath{\oplus}}
+#+LATEX_HEADER: \newunicodechar{≈}{\ensuremath{\approx}}
+
+* ~In~
+
+Objects for /reading/: *~const~ reference*
+
+#+BEGIN_SRC c++ :tangle no
+void f(const T&);
+
+// example
+void Align(const std::vector<int>& page_ids) {
+}
+Align(page_ids);
+#+END_SRC
+
+* ~In~ for Cheap or Non-copyable Objects
+
+Primitives, impossible to copy types: *value*
+
+#+BEGIN_SRC c++ :tangle no
+void f(T);
+
+// example
+void SetOrigin(int count, Point origin,
+               std::unique_ptr<Shape> box) {
+}
+SetOrigin(n, org, std::move(box))
+#+END_SRC
+
+* ~In~ need Ownership
+
+Objects for /ownership/: *rvalue reference*
+
+#+BEGIN_SRC c++ :tangle no
+void f(T&&);
+
+// example
+void SetMargins(std::vector<Margin>&& margins) {
+  m_margins = std::move(margins);  // own margins
+}
+SetMargins(std::move(page_margins)); // page_margins empty now
+#+END_SRC
+
+* ~In~ Need Copy not Ownership
+
+Provide two overloads; for callers wanting to
+
+- /relinquish/: *rvalue reference*
+- /retain/: *~const~ reference*
+
+#+BEGIN_SRC c++ :tangle no
+void f(T&&);         // for relinquishers
+void f(const T&);    // for retainers
+
+// example
+void SetMargins(std::vector<Margin>&& margins) {
+  m_margins = std::move(margins);  // cheap move
+}
+
+void SetMargins(const std::vector<Margin>& margins) {
+  m_margins = margins;  // expensive deep copy
+}
+#+END_SRC
+
+* ~In~ Need Ownership in *Constructor*
+
+Objects for /ownership/ during construction: *value* \\
+Passing by value Fresh allocation for object
+
+#+BEGIN_SRC c++ :tangle no
+void f(T);
+
+// example
+Image::Image(Pixels p) : m_pixels(std::move(p)) {
+}
+auto i1 = Image(std::move(p1));  // relinquish; cheap move
+auto i2 = Image(p2);             // retain; expensive deep copy
+#+END_SRC
+
+* ~In and Out~
+
+Objects for /reading/ and /writing/: *lvalue reference*
+
+#+BEGIN_SRC c++ :tangle no
+void f(T&);
+
+// example
+void RealignMargins(std::vector<Margin>& margins) {
+}
+#+END_SRC
+
+* ~Out~
+
+/Return/ by *value*
+
+#+BEGIN_SRC c++ :tangle no
+T f();
+
+// example
+Image RenderDoc() {
+  return Image(/*some params*/);
+}
+#+END_SRC
+
+* ~Out~ for Move-Unfriendly Objects
+
+/Pass/ as *lvalue reference*
+
+#+BEGIN_SRC c++ :tangle no
+void f(T&);
+
+// example
+// move-unfriendly type with hardly any freestore data
+struct doc::Properties {
+  Point                 origin;
+  float                 size_x, size_y;
+  std::array<Margin>    margin_sizes;
+};
+void Deduce(doc::Properties& p) {
+}
+#+END_SRC
+
+#+latex: \vspace{0.75em}
+
+*Reference*: [[https://github.com/CppCon/CppCon2014/blob/master/Presentations/Back%2520to%2520the%2520Basics!%2520Essentials%2520of%2520Modern%2520C%252B%252B%2520Style/Back%2520to%2520the%2520Basics!%2520Essentials%2520of%2520Modern%2520C%252B%252B%2520Style%2520-%2520Herb%2520Sutter%2520-%2520CppCon%25202014.pdf][Essentials of Modern C++ Style, /Herb Sutter/]]
