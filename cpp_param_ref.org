@@ -204,6 +204,33 @@ void Deduce(doc::Properties& p) {
 }
 #+END_SRC
 
+* ~Out~ Object Reference
+
+#+BEGIN_EXPORT latex
+\invisible{hi}\vspace{-1.5em}
+\hfill\begin{tabular}{@{}p{0.4\linewidth}@{}}
+    \vspace{-3em}
+#+END_EXPORT
+
+#+BEGIN_SRC c++
+      T& f();
+const T& f();
+#+END_SRC
+
+#+LATEX: \end{tabular}
+
+Return *lvalue reference* to /object outliving function and caller/
+
+#+BEGIN_SRC c++
+// example
+struct Application {
+  Document& GetDocument { return m_pdf; }  // covariant return type
+  PDFDocument m_pdf;
+};  // app outlives GetDocument() and temp() calls
+void PrintDoc(Application& app) { app.GetDocument().Print(); }
+int main() { Application app{str_pdf_path}; PrintDoc(app); }
+#+END_SRC
+
 * ~In Out~
 
 #+BEGIN_EXPORT latex
@@ -226,29 +253,6 @@ void AdjustMargins(std::vector<Margin>& margins) {
 }
 #+END_SRC
 
-* Perfect Forwarding
-
-#+BEGIN_EXPORT latex
-\invisible{hi}\vspace{-1.5em}
-\hfill\begin{tabular}{@{}p{0.4\linewidth}@{}}
-    \vspace{-3em}
-#+END_EXPORT
-
-#+BEGIN_SRC c++
-template <typename T>
-void f(T&&);
-#+END_SRC
-
-#+LATEX: \end{tabular}
-
-Pass parameter retaining lvalue/rvalue-/ness/: *forwarding reference*
-
-#+BEGIN_SRC c++
-template <typename T>
-void SetTiel(T&& title) {
-  internal::SetTitle(std::forward<T>(title));
-}
-#+END_SRC
 
 #+LATEX: \vspace{0.75em}
 *Reference*: [[https://github.com/CppCon/CppCon2014/blob/master/Presentations/Back%2520to%2520the%2520Basics!%2520Essentials%2520of%2520Modern%2520C%252B%252B%2520Style/Back%2520to%2520the%2520Basics!%2520Essentials%2520of%2520Modern%2520C%252B%252B%2520Style%2520-%2520Herb%2520Sutter%2520-%2520CppCon%25202014.pdf][Essentials of Modern C++ Style, /Herb Sutter/]]
