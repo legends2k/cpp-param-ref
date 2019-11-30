@@ -63,3 +63,8 @@ Append this to your Emacs configuration
 * Edit `cpp-params-refcard.org`
 * Save
 * Export <kbd>C-c C-e l o</kbd>
+
+# To Do
+
+* Add horizontal rules between sections
+* Use _mononoki_ font for monospace using `fontspec` package

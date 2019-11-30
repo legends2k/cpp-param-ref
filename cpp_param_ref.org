@@ -195,12 +195,12 @@ Returning value (both move and copy) will lead to deep copy for [[https://stacko
 #+BEGIN_SRC c++
 // example
 // a move-unfriendly type (has no freestore data members)
-struct doc::Properties {
-  Point                 origin;
-  float                 size_x, size_y;
-  std::array<Margin>    margin_sizes;
+struct Properties {
+  Point                  origin;
+  float                  size_x, size_y;
+  std::array<Margin, 4>  margin_sizes;
 };
-void Deduce(doc::Properties& p) {
+void Deduce(Properties& p) {
 }
 #+END_SRC
 
